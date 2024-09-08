@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Chat</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .container {
+            max-width: 800px;
+            margin-top: 30px;
+        }
+
+        .chat-box {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .pdf-text,
+        .response-box {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            min-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .btn,
+        .form-control {
+            border-radius: 4px;
+        }
+
+        .file-upload {
+            position: relative;
+            display: inline-block;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .chat-form {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .chat-form input[type="text"] {
+            flex: 1;
+            margin-right: 10px;
+            border-radius: 4px;
+        }
+
+        .typing-indicator {
+            display: none;
+            font-style: italic;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        .confirm-modal .modal-content {
+            padding: 20px;
+        }
+
+        .file-upload .btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-upload .btn i {
+            margin-right: 5px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .formatted-text {
+            white-space: pre-wrap;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        img {
+            width: 240px;
+            display: block;
+            margin: auto;
+        }
+    </style>
+
+    <!-- Inclua a biblioteca docx -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.0.5/docx.min.js"></script>
+    <!-- Outros scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/file-saver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="chat-box">
+            <img src="static/images/logo.png">
+            <h1 class="text-center"></h1>
+
+            <!-- Upload File Form -->
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="file">Anexar Documento</label>
+                    <div class="file-upload">
+                        <button type="button" class="btn btn-default">
+                            <i class="fa fa-paperclip"></i> Anexar arquivo
+                        </button>
+                        <input type="file" class="form-control" id="file" name="file" accept=".pdf">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Carregar</button>
+
+                <!-- Loading Indicator (shown when processing) -->
+                <div id="progress-bar-container" style="display:none;" class="loading-indicator">
+                    <i class="fa fa-spinner fa-spin" id="progress-bar-status"></i> Processando arquivo...
+                </div>
+
+            </form>
+
+            <!-- Ask a Question Form -->
+            <form id="questionForm" class="chat-form d-none">
+                <input type="text" class="form-control" id="question" name="question"
+                    placeholder="Faça uma pergunta sobre o documento">
+                <button type="submit" class="btn btn-primary">Perguntar</button>
+            </form>
+
+            <!-- Typing Indicator -->
+            <div id="typingIndicator" class="typing-indicator">Helo está digitando...</div>
+
+            <!-- Display Answer -->
+            <div id="answer" class="response-box"></div>
+
+            <!-- Display Tables -->
+            <div id="tables" class="table-container"></div>
+
+            <!-- Display Images -->
+            <div id="images"></div>
+
+            <!-- Format Button -->
+            <button id="formatButton" class="btn btn-info">Formatar Resultado</button>
+
+            <!-- Display Formatted Text -->
+            <div id="formattedResult" class="formatted-text d-none"></div>
+
+            <!-- Download Certificate Button -->
+            <div id="certificateSection" class="d-none">
+                <h3>Gerar Atestado</h3>
+                <!-- Print Button -->
+                <button id="printButton" class="btn btn-info">Imprimir Certificado</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Função para formatar o texto do certificado
+        function formatText(data) {
+            return `ATESTADO DE CAPACIDADE TÉCNICA
+
+${data['EMPRESA CONTRATANTE'] || '__________'}, localizada no ${data['ENDEREÇO DO CONTRATANTE'] || '__________'}, inscrita no CNPJ sob nº ${data['CNPJ EMPRESA CONTRATANTE'] || '__________'}, declara que mantém com a empresa STEFANINI CONSULTORIA E ASSESSORIA EM INFORMÁTICA S.A., com sede em Jaguariúna/SP, na Rua Minas Gerais, nº 1.476, Jardim Alice, inscrita no CNPJ nº. 58.069.360/0001-20, o Contrato ${data['NÚMERO DO CONTRATO'] || '__________'}., firmado em ${data['DATA DE ASSINATURA DO CONTRATO'] || '__________'} conforme abaixo discriminado:
+
+Pregão Eletrônico: ${data['NÚMERO DO PREGÃO ELETRÔNICO'] || '__________'}.
+Número do Contrato: ${data['NÚMERO DO CONTRATO'] || '__________'}.
+
+Objeto: ${data['OBJETIVO SOLICITADO NO CONTRATO'] || '__________'}
+Vigência: ${data['DATA DE INÍCIO DO CONTRATO'] || '__________'} a ${data['DATA DE TÉRMINO DO CONTRATO'] || '__________'}.
+
+DETALHAMENTO DOS SERVIÇOS PRESTADOS:
+O escopo dos serviços prestados encontra-se detalhado no Contrato ${data['NÚMERO DO CONTRATO'] || '__________'}. no Edital do Pregão Eletrônico Nº ${data['NÚMERO DO PREGÃO ELETRÔNICO'] || '__________'}, e em seus anexos e aditivos.
+
+${data['SERVIÇOS PRESTADOS'] || '__________'}.
+
+LOCAL DE EXECUÇÃO DOS SERVIÇOS: 
+${data['LOCAL DE EXECUÇÃO DOS SERVIÇOS'] || '__________'}
+
+VOLUMETRIA:
+${data['INFORMAR VOLUMETRIA DOS SERVIÇOS PRESTADOS'] || '__________'}
+
+EQUIPE OPERACIONAL:
+${data['EQUIPE OPERACIONAL'] || '__________'}
+
+AMBIENTE COMPUTACIONAL:
+${data['AMBIENTE COMPUTACIONAL'] || '__________'}
+
+FERRAMENTAS UTILIZADAS:
+${data['FERRAMENTAS UTILIZADAS'] || '__________'}
+
+TECNOLOGIAS ENVOLVIDAS:
+${data['TECNOLOGIAS ENVOLVIDAS'] || '__________'}
+
+METOLOGIAS:
+${data['METOLOGIAS'] || '__________'}
+
+SATISFAÇÃO
+Atesta-se ainda, que os compromissos assumidos foram cumpridos satisfatoriamente, no que diz respeito aos padrões exigidos por esta empresa, principalmente no tocante ao cumprimento de prazos, desempenho e qualidade dos serviços fornecidos, nada constando em nossos arquivos que desabone comercial ou tecnicamente a referida empresa.
+
+SIGNATÁRIO
+Nome: ${data['Nome'] || 'PREENCHER'}
+Cargo: ${data['Cargo'] || 'PREENCHER'}
+E-Mail: ${data['E-Mail'] || 'PREENCHER'}
+Telefone: ${data['Telefone'] || 'PREENCHER'}
+
+${data['LOCAL'] || 'PREENCHER'}, ${data['DATA'] || 'PREENCHER'} de ${data['ANO'] || 'PREENCHER'}`;
+        }
+
+        $('#formatButton').on('click', function () {
+            const formattedText = formatText(extractedData);
+            $('#formattedResult').text(formattedText).removeClass('d-none');
+        });
+
+        $('#downloadCertificateButton').on('click', function () {
+            const formattedText = $('#formattedResult').text();
+            const { Document, Packer, Paragraph, TextRun } = docx;
+
+            const doc = new Document({
+                sections: [
+                    {
+                        properties: {},
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: formattedText,
+                                        size: 24, // Tamanho do texto em pontos
+                                    }),
+                                ],
+                            }),
+                        ],
+                    },
+                ],
+            });
+
+            Packer.toBlob(doc).then(blob => {
+                saveAs(blob, 'certificado.docx');
+            }).catch(err => console.error('Error generating document:', err));
+        });
+    </script>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Carregamento concluído</h4>
+                </div>
+
+                <div class="modal-body">
+                    <p>Seu documento foi carregado com sucesso.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        let documentText = '';
+        let extractedData = {};
+
+        $('#uploadForm').on('submit', function (e) {
+            e.preventDefault();
+            $('.loading-indicator').show();  // Exibe o indicador de carregamento
+            var formData = new FormData(this);
+
+            // Mostrar a barra de progresso antes do upload
+            $('#progress-bar-container').show();
+            $('#progress-bar-status').css('width', '0%'); // Inicializar a largura da barra de progresso com 0%
+            $('#progress-percentage').text('0%'); // Inicializar o texto com 0%
+
+            $.ajax({
+                url: '/upload',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                xhr: function () {
+                    var xhr = new window.XMLHttpRequest();
+
+                    // Progresso do upload
+                    xhr.upload.addEventListener('progress', function (e) {
+                        if (e.lengthComputable) {
+                            var percentComplete = (e.loaded / e.total) * 100;
+                            updateProgress(percentComplete); // Atualiza a barra de progresso
+                        }
+                    }, false);
+
+                    return xhr;
+                },
+                success: function (response) {
+                    documentText = response.text; // Salva o texto do documento
+                    $('#questionForm').removeClass('d-none');
+                    $('#confirmModal').modal('show');
+                    $('#progress-bar-container').hide(); // Esconde a barra de progresso após o upload
+                },
+                error: function (response) {
+                    alert(response.responseJSON.error);
+                    $('#progress-bar-container').hide(); // Esconde a barra de progresso em caso de erro
+                }
+            });
+        });
+
+        function updateProgress(percentage) {
+            // Limita o percentual entre 0 e 100
+            percentage = Math.max(0, Math.min(100, percentage));
+
+            // Atualiza a largura da barra de progresso
+            var progressBar = document.getElementById('progress-bar-status');
+            progressBar.style.width = percentage + '%';
+
+            // Atualiza o texto com o percentual
+            var progressPercentage = document.getElementById('progress-percentage');
+            progressPercentage.textContent = percentage + '%';
+        }
+
+        $('#questionForm').on('submit', function (e) {
+            e.preventDefault();
+            var question = $('#question').val();
+            $('#typingIndicator').show(); // Show typing indicator
+
+            $.ajax({
+                url: '/ask',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ question: question, document_text: documentText }),
+                success: function (response) {
+                    extractedData = parseResponse(response.extracted_info);
+                    $('#answer').text(response.extracted_info);
+                    $('#typingIndicator').hide(); // Hide typing indicator
+
+                    // Display certificate link if available
+                    if (response.certificate_path) {
+                        $('#certificateSection').removeClass('d-none');
+                        $('#certificateLink').attr('href', response.certificate_path);
+                    }
+                },
+                error: function (response) {
+                    $('#answer').text(response.responseJSON.error || 'Ocorreu um erro inesperado.');
+                    $('#typingIndicator').hide(); // Hide typing indicator
+                }
+            });
+        });
+
+        function parseResponse(responseText) {
+            const lines = responseText.split('\n').map(line => line.trim()).filter(line => line);
+            let data = {};
+            lines.forEach(line => {
+                const [key, value] = line.split(':').map(part => part.trim());
+                if (key && value) {
+                    data[key] = value;
+                }
+            });
+            return data;
+        }
+
+        // Função para imprimir o conteúdo do div com formatação
+        function printContent() {
+            const printWindow = window.open('', '', 'height=600,width=800');
+            const content = document.getElementById('formattedResult').innerHTML;
+            const styles = `
+        <style>
+            body { 
+                font-family: 'Roboto', sans-serif; 
+                margin: 20px; 
+                white-space: pre-wrap; /* Ensures indentation and line breaks are kept */
+            }
+            .formatted-text { 
+                background-color: #fff; 
+                padding: 20px; 
+                border-radius: 4px; 
+                border: 1px solid #ddd; 
+                font-size: 16px;
+            }
+            /* Add any additional styles here if necessary */
+        </style>
+    `;
+
+            printWindow.document.open();
+            printWindow.document.write('<html><head><title>Print</title>');
+            printWindow.document.write(styles); // Add the styles
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(content); // Insert the content
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+        }
+
+        // Evento do botão de imprimir
+        document.getElementById('printButton').addEventListener('click', printContent);
+
+        // Função para gerar e baixar o documento .docx
+        function downloadDocx() {
+            const { Document, Packer, Paragraph, TextRun } = docx;
+            const formattedText = document.getElementById('formattedResult').innerText;
+            const doc = new Document({
+                sections: [
+                    {
+                        properties: {},
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: formattedText,
+                                        size: 24, // Tamanho do texto em pontos
+                                    }),
+                                ],
+                            }),
+                        ],
+                    },
+                ],
+            });
+
+            Packer.toBlob(doc).then(blob => {
+                saveAs(blob, 'certificado.docx');
+            }).catch(err => console.error('Error generating document:', err));
+        }
+
+        // Evento do botão de download do certificado
+        document.getElementById('downloadCertificateButton').addEventListener('click', downloadDocx);
+
+        // Inicialmente, configure o botão ao carregar a página
+        document.addEventListener('DOMContentLoaded', function () {
+            setupCertificateButton();
+        });
+
+        // Adicione no final do seu script JavaScript
+        document.getElementById('downloadCertificateButton').addEventListener('click', function () {
+            const formattedText = document.getElementById('formattedResult').innerText;
+
+            const { Document, Packer, Paragraph, TextRun } = docx;
+
+            const doc = new Document({
+                sections: [
+                    {
+                        properties: {},
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: formattedText,
+                                        size: 24, // Tamanho do texto em pontos
+                                    }),
+                                ],
+                            }),
+                        ],
+                    },
+                ],
+            });
+
+            Packer.toBlob(doc).then(blob => {
+                saveAs(blob, 'certificado.docx');
+            }).catch(err => console.error('Error generating document:', err));
+        });
+
+    </script>
+</body>
+
+</html>
