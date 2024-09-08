@@ -42,6 +42,15 @@
 ## 📜 Descrição
 HeloDocs é um sistema web que permite o upload de documentos ```.pdf```, ```.docx```, ```.txt```, realiza a extração de informações e oferece funcionalidades para fazer perguntas sobre o conteúdo extraído. Além disso, o sistema permite a formatação do resultado e a geração de certificados em formato DOCX com base nas informações extraídas dos documentos.
 
+## 🔗 Utilização de APIs da OpenAI
+
+O sistema utiliza a API da OpenAI para responder perguntas e questionamentos feitos pelos usuários. Os modelos utilizados incluem:
+- **GPT-4:** Um dos modelos mais avançados disponíveis.
+- **GPT-4-turbo:** Versão otimizada do GPT-4.
+- **GPT-3.5-turbo:** Modelo anterior, mas ainda muito eficaz.
+
+As perguntas e questionamentos feitos pelos usuários são respondidos pela IA, proporcionando respostas precisas e contextuais baseadas no conteúdo dos documentos.
+
 ## ⚙️ Funcionalidades
 
 - 📁 Upload de Documentos: Permite ao usuário fazer upload de arquivos PDF.
