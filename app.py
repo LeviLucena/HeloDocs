@@ -86,7 +86,7 @@ def generate_certificate(fields):
 
 @app.route('/')
 def index():
-    return render_template('indexFUNCIONA copy.html')
+    return render_template('index.html')
 
 @app.route('/upload', methods=['POST'])
 def upload():
