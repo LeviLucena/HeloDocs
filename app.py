@@ -17,7 +17,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(CERTIFICATE_FOLDER, exist_ok=True)
 
 # Configure a chave da API OpenAI diretamente
-openai.api_key = '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'  # Substitua pela sua chave API real
+openai.api_key = 'SUA API OPENAI'  # Substitua pela sua chave API real
 
 def extract_text_from_pdf(file):
     text = ""
