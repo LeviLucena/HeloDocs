@@ -46,7 +46,7 @@ HeloDocs é um sistema web que permite o upload de documentos ```.pdf```, ```.do
 
 O sistema utiliza a API da OpenAI para responder perguntas e questionamentos feitos pelos usuários. Os modelos utilizados incluem:
 - **GPT-4:** Um dos modelos mais avançados disponíveis.
-- **GPT-4-turbo:** Versão otimizada do GPT-4.
+- **GPT-4o-mini:** Versão otimizada do GPT-4.
 - **GPT-3.5-turbo:** Modelo anterior, mas ainda muito eficaz.
 
 As perguntas e questionamentos feitos pelos usuários são respondidos pela IA, proporcionando respostas precisas e contextuais baseadas no conteúdo dos documentos.
@@ -90,6 +90,27 @@ As perguntas e questionamentos feitos pelos usuários são respondidos pela IA, 
 
 - ```index.html``` Página principal que fornece a interface do usuário para fazer upload de documentos, fazer perguntas e gerar certificados.
 - ```app.py``` Script Python que configura e executa o servidor Flask, gerencia rotas e processa o upload e as perguntas.
+- 
+## 📝 Configuração do Tesseract OCR
+Para o sistema HeloDocs realizar a extração de texto de documentos PDF usando OCR (Reconhecimento Óptico de Caracteres), é necessário ter o Tesseract OCR instalado em sua máquina. O Tesseract é uma ferramenta de código aberto para OCR, e o pytesseract é uma biblioteca Python que age como uma interface entre o Tesseract e o Python.
+
+### Passos para Instalar e Configurar o Tesseract OCR
+
+**Instalar o Tesseract OCR:**
+
+- Faça o download do instalador do Tesseract OCR a partir do repositório oficial ou de uma fonte confiável.
+- Execute o instalador e siga as instruções na tela para concluir a instalação.
+- Durante a instalação, anote o diretório onde o Tesseract OCR é instalado. Por padrão, ele é instalado em ```C:\Program Files\Tesseract-OCR\tesseract.exe``` no Windows.
+- Configurar o Caminho no Código:
+
+Após a instalação, você precisa configurar o caminho para o executável do Tesseract OCR em seu código Python. Isso é feito para que o pytesseract possa encontrar e usar o Tesseract OCR corretamente.
+
+Adicione o seguinte código no início do seu script Python para definir o caminho do Tesseract OCR:
+
+```
+# Configure o caminho para o executável do Tesseract OCR
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+```
 
 ## 🚀 Instruções de Configuração
 
