@@ -14,6 +14,12 @@
   <a href="https://jquery.com/">
     <img src="https://img.shields.io/badge/-jQuery-0769AD?style=flat-square&logo=jquery&logoColor=white" alt="jQuery Badge" />
   </a>
+    <a href="https://openai.com/">
+    <img src="https://img.shields.io/badge/-OpenAI-000000?style=flat-square&logo=openai&logoColor=white" alt="OpenAI Badge" />
+  </a>
+  <a href="https://openai.com/chatgpt">
+    <img src="https://img.shields.io/badge/-ChatGPT-0D96F2?style=flat-square&logo=openai&logoColor=white" alt="ChatGPT Badge" />
+  </a>
   <a href="https://github.com/dolanmiu/docx">
     <img src="https://img.shields.io/badge/-docx.js-000000?style=flat-square&logo=docx&logoColor=white" alt="docx.js Badge" />
   </a>
