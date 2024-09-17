@@ -185,8 +185,5 @@ def ask_question():
 if __name__ == '__main__':
     app.run(debug=True)
 ```
-## 🚨 Aviso de Direitos Autorais e Restrição de Uso 
+## Autor: [![Linkedin Badge](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/levilucena/)](https://www.linkedin.com/in/levilucena/)
 
-Este arquivo é **pessoal e privado**. O seu uso, reprodução, distribuição, ou qualquer forma de comercialização são estritamente proibidos sem permissão expressa. **Este projeto não possui licença gratuita** e não deve ser utilizado para fins comerciais ou distribuído de qualquer forma.
-
-**Todos os direitos reservados.**
