@@ -55,7 +55,7 @@ O sistema utiliza a API da OpenAI para responder perguntas e questionamentos fei
 - **GPT-4o-mini:** Versão otimizada do GPT-4.
 - **GPT-3.5-turbo:** Modelo anterior, mas ainda muito eficaz.
 
-As perguntas e questionamentos feitos pelos usuários são respondidos pela IA, proporcionando respostas precisas e contextuais baseadas no conteúdo dos documentos.
+A extração se baseia em critérios pré-definidos e as perguntas e questionamentos feitos pelos usuários são respondidos pela IA, proporcionando respostas precisas e contextuais baseadas no conteúdo dos documentos.
 
 ## ⚙️ Funcionalidades
 
