@@ -45,11 +45,11 @@
 ## 📜 Descrição
 HeloDocs é um sistema web que permite o upload de documentos ```.pdf```, ```.docx```, ```.txt```, realiza a extração de informações e oferece funcionalidades para fazer perguntas sobre o conteúdo extraído. Além disso, o sistema permite a formatação do resultado e a geração de certificados em formato DOCX com base nas informações extraídas dos documentos.
 
-## 🔗 Utilização de APIs da Google Gemini
+## 🔗 Utilização do modelo Llama
 
-O sistema utiliza a API da Google Gemini para responder perguntas e questionamentos feitos pelos usuários.
+O sistema utiliza o modelo Llama para responder perguntas e questionamentos feitos pelos usuários.
 
-A extração se baseia em critérios pré-definidos e as perguntas e questionamentos feitos pelos usuários são respondidos pela IA, proporcionando respostas precisas e contextuais baseadas no conteúdo dos documentos.
+Llama é uma família de modelos de linguagem desenvolvida pela Meta (anteriormente Facebook). Eles vêm em várias versões, como Llama-2, Llama-3, etc., com diferentes tamanhos de parâmetros e capacidades. A extração se baseia em critérios pré-definidos e as perguntas e questionamentos feitos pelos usuários são respondidos pela IA, proporcionando respostas precisas e contextuais baseadas no conteúdo dos documentos.
 
 ## ⚙️ Funcionalidades
 
