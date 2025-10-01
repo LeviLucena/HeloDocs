@@ -171,6 +171,7 @@
                         </button>
                         <input type="file" class="form-control" id="file" name="file" accept=".pdf,.docx,.txt">
                     </div>
+                    <div id="file-name-display" class="mt-2" style="font-style: italic; color: #666; display: none;"></div>
                 </div>
                 <button type="submit" class="btn btn-primary">Carregar</button>
 
@@ -827,6 +828,17 @@ ${data['LOCAL'] || 'PREENCHER'}, ${data['DATA'] || 'PREENCHER'}`;
         }).catch(err => {
             console.error('Erro ao gerar o documento:', err);
             alert('Ocorreu um erro ao gerar o documento.');
+        });
+
+        // Exibe o nome do arquivo selecionado
+        document.getElementById('file').addEventListener('change', function(e) {
+            const fileNameDisplay = document.getElementById('file-name-display');
+            if (this.files && this.files[0]) {
+                fileNameDisplay.textContent = 'Arquivo selecionado: ' + this.files[0].name;
+                fileNameDisplay.style.display = 'block';
+            } else {
+                fileNameDisplay.style.display = 'none';
+            }
         });
 
     </script>
