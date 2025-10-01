@@ -14,11 +14,8 @@
   <a href="https://jquery.com/">
     <img src="https://img.shields.io/badge/-jQuery-0769AD?style=flat-square&logo=jquery&logoColor=white" alt="jQuery Badge" />
   </a>
-    <a href="https://openai.com/">
-    <img src="https://img.shields.io/badge/-OpenAI-000000?style=flat-square&logo=openai&logoColor=white" alt="OpenAI Badge" />
-  </a>
-  <a href="https://openai.com/chatgpt">
-    <img src="https://img.shields.io/badge/-ChatGPT-0D96F2?style=flat-square&logo=openai&logoColor=white" alt="ChatGPT Badge" />
+    <a href="https://ai.google.dev/">
+    <img src="https://img.shields.io/badge/-Gemini-4285F4?style=flat-square&logo=google&logoColor=white" alt="Gemini Badge" />
   </a>
   <a href="https://github.com/dolanmiu/docx">
     <img src="https://img.shields.io/badge/-docx.js-000000?style=flat-square&logo=docx&logoColor=white" alt="docx.js Badge" />
@@ -48,12 +45,9 @@
 ## 📜 Descrição
 HeloDocs é um sistema web que permite o upload de documentos ```.pdf```, ```.docx```, ```.txt```, realiza a extração de informações e oferece funcionalidades para fazer perguntas sobre o conteúdo extraído. Além disso, o sistema permite a formatação do resultado e a geração de certificados em formato DOCX com base nas informações extraídas dos documentos.
 
-## 🔗 Utilização de APIs da OpenAI
+## 🔗 Utilização de APIs da Google Gemini
 
-O sistema utiliza a API da OpenAI para responder perguntas e questionamentos feitos pelos usuários. Os modelos utilizados incluem:
-- **GPT-4:** Um dos modelos mais avançados disponíveis.
-- **GPT-4o-mini:** Versão otimizada do GPT-4.
-- **GPT-3.5-turbo:** Modelo anterior, mas ainda muito eficaz.
+O sistema utiliza a API da Google Gemini para responder perguntas e questionamentos feitos pelos usuários.
 
 A extração se baseia em critérios pré-definidos e as perguntas e questionamentos feitos pelos usuários são respondidos pela IA, proporcionando respostas precisas e contextuais baseadas no conteúdo dos documentos.
 
@@ -124,6 +118,7 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tessera
 
 - Python 3.x
 - Pip (gerenciador de pacotes Python)
+- Ollama (https://ollama.ai/)
 - Instalação do Back-End
 
 ## Instalação do Back-End
@@ -146,13 +141,7 @@ venv\Scripts\activate     # Para Windows
 3. Instale as dependências:
 
 ```
-pip install flask
-```
-
-4. Execute o servidor Flask:
-
-```
-python app.py
+pip install -r requirements.txt
 ```
 
 ## 🏠 Uso
@@ -161,6 +150,27 @@ Faça o upload de um documento PDF.
 Após o upload, utilize o formulário para fazer perguntas sobre o documento.
 Visualize as respostas e formate-as conforme necessário.
 Gere e baixe o certificado DOCX ou imprima diretamente a partir da interface.
+
+## ⚙️ Configuração do Ollama
+
+1. Baixe e instale o Ollama em https://ollama.ai/
+
+2. Inicie o servidor Ollama:
+   ```
+   ollama serve
+   ```
+
+3. Baixe o modelo necessário (ex: phi3):
+   ```
+   ollama pull phi3
+   ```
+
+4. Execute a aplicação:
+   ```
+   python app.py
+   ```
+
+O servidor Ollama precisa estar em execução para que a aplicação funcione corretamente.
 
 ## 💻 Exemplo de ```app.py```
 

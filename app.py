@@ -3,7 +3,7 @@ import pdfplumber
 import pytesseract
 from PIL import Image
 import os
-import openai
+import ollama
 from docx import Document
 import fitz  # PyMuPDF
 import io
@@ -21,8 +21,7 @@ os.makedirs(CERTIFICATE_FOLDER, exist_ok=True)
 # Configuração do caminho do Tesseract
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
-# Configuração da chave da API OpenAI
-openai.api_key = 'SUA CHAVE API AQUI'  # INSIRA A CHAVE API
+# Ollama não precisa de chave API, apenas do nome do modelo
 
 def extract_text_from_pdf(file):
     text = ""
@@ -190,22 +189,19 @@ def ask():
             Por favor, retorne a resposta no formato acima, substituindo [Placeholder] pelos valores extraídos do texto. Cada campo deve estar em uma linha separada.
         """
 
-        response = openai.ChatCompletion.create(
-            model="gpt-4o-mini",  # Ou "gpt-4" ou "gpt-3.5-turbo" dependendo da sua escolha
-            messages=[
-                {"role": "system", "content": "Você é um assistente útil."},
-                {"role": "user", "content": prompt}
-            ],
-            max_tokens=1500,
-            temperature=0.7
+        # Configurar o modelo Ollama
+        response = ollama.chat(
+            model='phi3',
+            messages=[{"role": "user", "content": prompt}],
+            options={"temperature": 0.7, "num_predict": 1500}
         )
 
-        extracted_info = response.choices[0].message['content'].strip()
+        extracted_info = response['message']['content'].strip()
         formatted_info = '\n'.join(line.strip() for line in extracted_info.split('\n') if line.strip())
 
         return jsonify({'extracted_info': formatted_info})
     except Exception as e:
-        return jsonify({'error': f'Error from OpenAI: {str(e)}'}), 500
+        return jsonify({'error': f'Error from Gemini: {str(e)}'}), 500
 
 @app.route('/generate_certificate', methods=['POST'])
 def generate_certificate_route():
@@ -335,16 +331,13 @@ def ask_custom():
     prompt = f"Documento: {document_text}\n\nPergunta: {question}\n\nResponda com base nas informações do documento."
 
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-4o-mini",  # Ou "gpt-4o-mini", "gpt-4" ou "gpt-3.5-turbo" dependendo da sua escolha
-            messages=[
-                {"role": "system", "content": "Você é um assistente útil."},
-                {"role": "user", "content": prompt}
-            ],
-            max_tokens=1500,
-            temperature=0.7
+        # Configurar o modelo Ollama
+        response = ollama.chat(
+            model='phi3',
+            messages=[{"role": "user", "content": prompt}],
+            options={"temperature": 0.7, "num_predict": 1500}
         )
-        return jsonify({'answer': response.choices[0].text})
+        return jsonify({'answer': response['message']['content']})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -361,3 +354,4 @@ if __name__ == '__main__':
 
 if __name__ == '__main__':
     app.run(debug=True)
+

@@ -177,6 +177,7 @@
                 <!-- Loading Indicator (shown when processing) -->
                 <div id="progress-bar-container" style="display:none;" class="loading-indicator">
                     <i class="fa fa-spinner fa-spin" id="progress-bar-status"></i> Processando arquivo...
+                    <span id="progress-percentage">0%</span>
                 </div>
 
             </form>
@@ -210,29 +211,37 @@
 
             <script>
                 // Este script pode ser usado para atualizar dinamicamente a visualização das imagens
-                document.querySelector('form').addEventListener('submit', function (e) {
-                    e.preventDefault();
-                    var formData = new FormData(this);
+                document.addEventListener('DOMContentLoaded', function() {
+                    var uploadForm = document.getElementById('uploadForm');
+                    if (uploadForm) {
+                        uploadForm.addEventListener('submit', function (e) {
+                            e.preventDefault();
+                            var formData = new FormData(this);
 
-                    fetch('/upload', {
-                        method: 'POST',
-                        body: formData
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.images) {
-                                var container = document.getElementById('image-container');
-                                container.innerHTML = ''; // Limpar imagens anteriores
-                                data.images.forEach(function (image) {
-                                    var img = document.createElement('img');
-                                    img.src = '/static/images/' + image; // Verifique se este caminho está correto
-                                    img.style.width = '200px'; // Ajuste conforme necessário
-                                    img.style.margin = '10px';
-                                    container.appendChild(img);
-                                });
-                            }
-                        })
-                        .catch(error => console.error('Error:', error));
+                            fetch('/upload', {
+                                method: 'POST',
+                                body: formData
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.images) {
+                                        var container = document.getElementById('image-container');
+                                        if (container) {
+                                            container.innerHTML = ''; // Limpar imagens anteriores
+                                            container.classList.remove('d-none'); // Mostrar o container
+                                            data.images.forEach(function (image) {
+                                                var img = document.createElement('img');
+                                                img.src = '/static/images/' + image; // Verifique se este caminho está correto
+                                                img.style.width = '200px'; // Ajuste conforme necessário
+                                                img.style.margin = '10px';
+                                                container.appendChild(img);
+                                            });
+                                        }
+                                    }
+                                })
+                                .catch(error => console.error('Error:', error));
+                        });
+                    }
                 });
             </script>
 
@@ -462,8 +471,12 @@ ${data['LOCAL'] || 'PREENCHER'}, ${data['DATA'] || 'PREENCHER'}`;
                 contentType: 'application/json',
                 data: JSON.stringify({ question: prompt, document_text: documentText }),
                 success: function (response) {
-                    extractedData = parseResponse(response.extracted_info);
-                    $('#answer').text(response.extracted_info);
+                    if(response.extracted_info) {
+                        extractedData = parseResponse(response.extracted_info);
+                        $('#answer').text(response.extracted_info);
+                    } else {
+                        $('#answer').text('Nenhuma informação extraída do documento.');
+                    }
                     $('#typingIndicator').hide(); // Hide typing indicator
 
                     // Display certificate link if available
@@ -473,33 +486,13 @@ ${data['LOCAL'] || 'PREENCHER'}, ${data['DATA'] || 'PREENCHER'}`;
                     }
                 },
                 error: function (response) {
-                    $('#answer').text(response.responseJSON.error || 'Ocorreu um erro inesperado.');
+                    $('#answer').text(response.responseJSON?.error || 'Ocorreu um erro inesperado.');
                     $('#typingIndicator').hide(); // Hide typing indicator
                 }
             });
         }
 
-        $.ajax({
-            url: '/ask_custom',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ question: prompt, document_text: documentText }),
-            success: function (response) {
-                extractedData = parseResponse(response.extracted_info);
-                $('#answer').text(response.extracted_info);
-                $('#typingIndicator').hide(); // Hide typing indicator
 
-                // Display certificate link if available
-                if (response.certificate_path) {
-                    $('#certificateSection').removeClass('d-none');
-                    $('#certificateLink').attr('href', response.certificate_path);
-                }
-            },
-            error: function (response) {
-                $('#answer').text(response.responseJSON.error || 'Ocorreu um erro inesperado.');
-                $('#typingIndicator').hide(); // Hide typing indicator
-            }
-        });
 
         function updateProgress(percentage) {
             // Limita o percentual entre 0 e 100
@@ -507,11 +500,15 @@ ${data['LOCAL'] || 'PREENCHER'}, ${data['DATA'] || 'PREENCHER'}`;
 
             // Atualiza a largura da barra de progresso
             var progressBar = document.getElementById('progress-bar-status');
-            progressBar.style.width = percentage + '%';
+            if (progressBar) {
+                progressBar.style.width = percentage + '%';
+            }
 
             // Atualiza o texto com o percentual
             var progressPercentage = document.getElementById('progress-percentage');
-            progressPercentage.textContent = percentage + '%';
+            if (progressPercentage) {
+                progressPercentage.textContent = percentage + '%';
+            }
         }
 
         $('#questionForm').on('submit', function (e) {
@@ -542,27 +539,7 @@ ${data['LOCAL'] || 'PREENCHER'}, ${data['DATA'] || 'PREENCHER'}`;
             });
         });
 
-        $.ajax({
-            url: '/ask_custom',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ question: question, document_text: documentText }),
-            success: function (response) {
-                extractedData = parseResponse(response.extracted_info);
-                $('#answer').text(response.extracted_info);
-                $('#typingIndicator').hide(); // Hide typing indicator
 
-                // Display certificate link if available
-                if (response.certificate_path) {
-                    $('#certificateSection').removeClass('d-none');
-                    $('#certificateLink').attr('href', response.certificate_path);
-                }
-            },
-            error: function (response) {
-                $('#answer').text(response.responseJSON.error || 'Ocorreu um erro inesperado.');
-                $('#typingIndicator').hide(); // Hide typing indicator
-            }
-        });
     </script>
     <script>
         // Função para formatar o texto do certificado
