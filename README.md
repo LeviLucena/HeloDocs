@@ -138,7 +138,7 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tessera
 1. Clone o repositório:
 
 ```
-git clone https://github.com/seu_usuario/helodocs.git
+git clone https://github.com/LeviLucena/HeloDocs.git
 cd helodocs
 ```
 
