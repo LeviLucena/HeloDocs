@@ -61,6 +61,17 @@ Llama é uma família de modelos de linguagem desenvolvida pela Meta (anteriorme
 - 📝 Geração de Certificado: Gera um certificado em formato DOCX com base nas informações extraídas.
 - 🖨️ Impressão de Certificado: Oferece uma opção para imprimir o certificado diretamente da interface web.
 
+# Tela do Sistema
+
+| Quadro 1 | Quadro 2 | Quadro 3 | Quadro 4 | Quadro 5 |
+|---|---|---|---|---|
+| ![image](https://github.com/user-attachments/assets/0152510d-66d4-4c44-a20f-71ef6996d508) | ![image](https://github.com/user-attachments/assets/7ae159f2-f32c-47f6-a7a4-3e8b316f21ec) | ![image](https://github.com/user-attachments/assets/673854b7-8472-46d8-8aba-eff44fc808ad) | ![image](https://github.com/user-attachments/assets/cab89ad7-52e5-4348-ae3a-7963a5864142) | ![image](https://github.com/user-attachments/assets/f5802461-ba99-49ab-9bd1-ff28a869e9c3) |
+
+---
+
+
+
+
 ## 🛠️ Tecnologias Utilizadas
 ### Front-End
 - **HTML5:** Estrutura básica do conteúdo da página.
