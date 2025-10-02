@@ -453,6 +453,14 @@ ${data['LOCAL'] || 'PREENCHER'}, ${data['DATA'] || 'PREENCHER'}`;
                     $('#confirmModal').modal('show');
                     $('#progress-bar-container').hide(); // Esconde a barra de progresso após o upload
 
+                    // Exibe o nome do arquivo carregado
+                    const fileInput = document.getElementById('file');
+                    if (fileInput.files && fileInput.files[0]) {
+                        const fileNameDisplay = document.getElementById('file-name-display');
+                        fileNameDisplay.textContent = 'Documento carregado: ' + fileInput.files[0].name;
+                        fileNameDisplay.style.display = 'block';
+                    }
+
                     // Submete a pergunta automaticamente
                     submitQuestion();
                 },
